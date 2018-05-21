@@ -2,6 +2,7 @@
 using namespace std;
 
 // function prototypes
+void printRow(int*, int);
 void SeatTheStudents(int*, int, int, int);
 
 int main()
@@ -20,10 +21,27 @@ int main()
     //make the row of seats in array form
     int row[seats] = {0}; 
    
+   //print the row before seating
+   cout << "\n\nThe row of chairs before seating is: \n\n";
+   printRow(row, seats);
+   
    //call the function to perform the seating
     SeatTheStudents(row, seats, students, SeatedStudents);
     
+    //print the row after seating
+    cout << "\n\nThe row of chairs after seating is: \n\n";
+    printRow(row, seats);
+    
     return 0;
+}
+
+void printRow(int *RowStudents, int seats)
+{
+	//loop through the array indexes and print their value
+	for(int a = 0; a < seats; a++)
+	{
+		cout << RowStudents[a];
+	};
 }
 
 void SeatTheStudents(int *RowStudents, int NumberOfSeats, int NumberOfStudents, int SeatedStudents)
@@ -42,15 +60,6 @@ void SeatTheStudents(int *RowStudents, int NumberOfSeats, int NumberOfStudents, 
 	int NewCounter = 0;
 	//Midpoint is the calculated index of halfway through the unseated segment of chairs --- it is right side dominant
 	int Midpoint = 0;
-	//Print the unseated row of chairs as 0s in an array
-	if(!(SeatedStudents > 0))
-	{
-		cout << "\nThe array before seating is: \n" << endl;
-		for(int i = 0; i < NumberOfSeats; i++)
-		{
-    		cout << RowStudents[i];
-		}
-	}
 	
 	//If theres 2+ students to be seated, this greedy code places the first 2 students at the beginning and end of the row
 	if((RowStudents[0] != 1 || RowStudents[EndOfArray] != 1) && NumberOfStudents > 1)
@@ -58,7 +67,7 @@ void SeatTheStudents(int *RowStudents, int NumberOfSeats, int NumberOfStudents, 
 		if(RowStudents[0] != 1) {RowStudents[0] = 1; SeatedStudents++;}
 		if(RowStudents[EndOfArray] != 1) {RowStudents[EndOfArray] = 1; SeatedStudents++;}
 	}
-	
+
 	/*this for loop iterates through each index, if the array's value at the index is 0, the inside while
 	loop iterates through the following indexes counting how many consecutive 0s there are*/
 	for(int i = 0; i < NumberOfSeats; i++)
@@ -82,26 +91,21 @@ void SeatTheStudents(int *RowStudents, int NumberOfSeats, int NumberOfStudents, 
 			i++;
 		}
 	}
+	
 	//calculate midpoint
 	Midpoint = (StartingIndex + (Counter / 2));
 	
-	//check to see that we haven't seated too many students, then seat the next student
-	if(SeatedStudents < NumberOfStudents) {RowStudents[Midpoint] = 1;}
-	//increment amount of students seated
-	SeatedStudents++;
-	//checks if we're finished, and prints the new row when confirmed
-	if(SeatedStudents >= NumberOfStudents)
+	//seat a student
+	if(SeatedStudents < NumberOfStudents)
 	{
-		cout << endl << "\nThe array after seating is: \n" << endl;
-   		for(int i = 0; i < NumberOfSeats; i++)
-   	{
-		cout << RowStudents[i];
+		RowStudents[Midpoint] = 1;
+		SeatedStudents++;
 	}
-	return;
-	}
-	//recursive call of the function, calls itself when we have not seated all of the students.
+	
+	//recursive call to continue seating
 	if(SeatedStudents < NumberOfStudents)
 	{
 		SeatTheStudents(RowStudents, NumberOfSeats, NumberOfStudents, SeatedStudents);
 	}
+	else return; //return to main
 }
